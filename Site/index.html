@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bem-vindo as minhas soluções PHP</title>
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Introdução -->
+    <div id="intro">
+        <div class="intro">
+            Bem-vindo as minhas soluções em PHP
+        </div>
+    </div>
+
+    <!-- ==== SCRIPTS ==== -->
+    <!-- Script Consulta Cliente -->
+    <script>
+        function consultaClientes() 
+        {
+            $.post( 
+                $("#minhaConsulta").attr("action"), 
+                $("#minhaConsulta :input").serializeArray(), 
+                function(data)
+                    { 
+                        $("#resultadoConsulta").html(data);
+                    });
+        clearInput();
+        }
+
+        function clearInput() 
+        {
+            $("#minhaConsulta :input").each( function() {
+            $(this).val('');
+            });
+            $("#enviar").val('Pesquisar');
+        }
+    </script>
+    
+    <!-- Script Consulta Cliente ID -->
+    <script>
+        function consultaIDCliente($id) 
+        {
+            $.post( 
+                "php/consultaIDCliente.php", 
+                "id="+$id, 
+                function(data)
+                    { 
+                        $("#resultadoConsultaID").html(data);
+                    });
+        }
+    </script>
+
+    <!-- Script de Exclusão de um Cliente-->
+    <script>
+        
+            function deletarID($id)
+            {
+                consultaIDCliente($id);
+                var modal = document.getElementById('delModal'); //id da Modal
+                var span = document.getElementsByClassName("close")[0]; //pega o elemento [x]
+                modal.style.display = "block";
+                span.onclick = function() //quando clicar no botão [x] ela fecha
+                {
+                    modal.style.display = "none";
+                }
+                window.onclick = function(event) //quando clicar fora da janela, ela fecha
+                {
+                    if (event.target == modal) 
+                    {
+                        modal.style.display = "none";
+                    }
+                }
+            }
+
+            function fechaModal() //quando clicar no botão "Não" a Modal fecha
+            {
+                var modal = document.getElementById('delModal'); //id da Modal
+                modal.style.display = "none";
+            }
+
+            
+            function excluiCliente($oId) 
+            {
+                
+                $.post( 
+                    "php/excluiCliente.php", 
+                    "id="+$oId, 
+                    function(data)
+                    { 
+                        $("#resultadoExcluir").html(data);
+                        consultaClientes();
+                    });
+                    var modal = document.getElementById('delModal'); //id da Modal
+                    modal.style.display = "none";
+            }
+            
+    </script>
+
+    <!-- Script Cadastro Cliente -->
+    <script>
+            function cadastraCliente() 
+            {
+                $.post( 
+                    $("#meuCadastro").attr("action"), 
+                    $("#meuCadastro :input").serializeArray(), 
+                    function(data)
+                        { 
+                            $("#resultadoCadastro").html(data);
+                        });
+                clearInput2();
+            }
+
+            function clearInput2() 
+            {
+                $("#meuCadastro :input").each( function() {
+                $(this).val('');
+                });
+                $("#enviar2").val('Enviar');
+            }
+    </script>
+
+    <!-- Script Alterar Cliente -->
+    <script>
+    $(document).ready(function() 
+    {
+        $("#altID").val('');
+    }
+    );
+
+        function alterarID($id,$nom,$sobre,$tel,$email,$end,$cid)
+        {
+            $("#altID").val($id);
+            $("#altNome").val($nom);
+            $("#altSobrenome").val($sobre);
+            $("#altTel").val($tel);
+            $("#altEmail").val($email);
+            $("#altEnd").val($end);
+            $("#altCid").val($cid);
+        }
+
+        function alteraCliente() 
+        {
+            $.post( 
+                $("#meuAlterar").attr("action"), 
+                $("#meuAlterar :input").serializeArray(), 
+                function(data)
+                    { 
+                        $("#resultadoAlterar").html(data);
+                    });
+            clearInput3();
+        }
+
+        function clearInput3() 
+        {
+            $("#meuAlterar :input").each( function() {
+            $(this).val('');
+            });
+            $("#enviar3").val('Alterar');
+        }
+    </script>
+
+    <!-- ==== FIM dos SCRIPTS ==== -->
+    
+    <!-- Consulta  -->
+    <script> consultaClientes(); </script>
+    <div id="consulta">
+        <span class="title">Consulta em Banco de Dados</span>
+        <p>
+        <form id="minhaConsulta" action="php/consultaCliente.php" onsubmit="consultaClientes(); return false" method="post">
+            <div class="verSpace"></div>
+            <span style="font-size: 1.2em;">Pesquisar Nome : <input type="text" name="parametro" style="font-size: 16px;" size="60" placeholder="Deixe em branco e aperte Pesquisar para ver todos os clientes."></span>
+                <input id="enviar" class="submitConsulta" type="submit" value="Pesquisar"></button>
+        </form> 
+        </p>
+        <div id="resultadoConsulta" class="resultado">
+        </div>
+        <div id="resultadoExcluir" class="resultado">
+        </div>
+    </div>
+
+    <!-- Cadastro -->
+        <div id="cadastro">
+        <span class="title">Cadastro em Banco de Dados</span>
+        <p>
+        <form id="meuCadastro" action="php/cadastroCliente.php" onsubmit="cadastraCliente(); return false" method="post">
+            <div class="verSpace"></div>
+            <div class="verSpace"></div>
+            Nome : <input type="text" name="nome" size="20" placeholder="Joseane" required>   <span class="horSpace"></span>
+            Sobrenome : <input type="text" name="sobrenome" size="20" placeholder="Santana" required>
+            <div class="verSpace"></div>
+            Telefone : <input type="text" name="telefone" size="20" placeholder="6142569912" required>    <span class="horSpace"></span>
+            E-mail : <input type="text" name="email" size="30" placeholder="meuemail@site.com.br" required>
+            <div class="verSpace"></div>
+            Endereço : <input type="text" name="endereco" size="50" placeholder="Rua Juscelino Presidente Fernando, 32" required>    <span class="horSpace"></span>
+            Cidade : <input type="text" name="cidade" size="20" placeholder="Barra Mansa-RJ" required>
+            <div>
+                <input id="enviar2" class="submitEspecial" type="submit" value="Enviar"></button>
+            </div>
+        </form> 
+        </p>
+        <div id="resultadoCadastro" class="resultado">
+        </div>
+    </div>
+
+    <!-- Alterar Registro -->
+    <div id="alterar">
+    <span class="title">Alteração de um Registro</span>
+    <p>
+        <form id="meuAlterar" action="php/alterarCliente.php" onsubmit="alteraCliente(); return false" method="post">
+            <div class="verSpace"></div>
+            <div class="verSpace"></div>
+            ID : <input id="altID" type="text"  name="id" size="4"  readonly required> <span style="font-size:10px">(Para modificar clique no botão de alterar na seção Consulta)</span><br />
+            <div class="verSpace"></div>
+            Nome : <input id="altNome" type="text" name="nome" size="20" placeholder="Joseane" required>   <span class="horSpace"></span>
+            Sobrenome : <input id="altSobrenome" type="text" name="sobrenome" size="20" placeholder="Santana" required>
+            <div class="verSpace"></div>
+            Telefone : <input id="altTel" type="text" name="telefone" size="20" placeholder="6142569912" required>    <span class="horSpace"></span>
+            E-mail : <input id="altEmail" type="text" name="email" size="30" placeholder="meuemail@site.com.br" required>
+            <div class="verSpace"></div>
+            Endereço : <input id="altEnd" type="text" name="endereco" size="50" placeholder="Rua Juscelino Presidente Fernando, 32" required>    <span class="horSpace"></span>
+            Cidade : <input id="altCid" type="text" name="cidade" size="20" placeholder="Barra Mansa-RJ" required>
+            <div>
+                <input id="enviar3" class="submitAlterar" type="submit" value="Alterar"></button>
+            </div>
+        </form> 
+        </p>
+        <div id="resultadoAlterar" class="resultado">
+        </div>
+    </div>
+
+    <!-- Modal de Exclusão de um Registro -->
+    <div class="modal" id="delModal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">[ x ]</span>
+                <h2>Confirmação de Exclusão de Registro</h2>
+            </div>
+            <div class="modal-body" id="conteudoModal">
+                <p>Tem certeza que deseja excluir o seguinte registro?</p>
+                <div id="resultadoConsultaID" class="resultado"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Palavra Final -->
+    <div id="fim">
+        <span class="title">E aí, gostou?</span>
+        <p>
+            Fique à vontade para me enviar um e-mail com seu feedback.<br />
+            Gostaria bastante de manter o contato: alan.pereira93@yahoo.com.br<br />
+            Obrigado!
+        </p>
+    </div>
+</body>
+
+</html> 
